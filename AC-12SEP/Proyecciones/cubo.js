@@ -117,3 +117,16 @@ class Cubo {
     }
 }
 
+// Inicializar los canvas
+const perspectivaCanvas = document.getElementById('perspectiva');
+const ortograficoCanvas = document.getElementById('ortografico');
+const isometricoCanvas = document.getElementById('isometrico');
+const perspectivaCtx = perspectivaCanvas.getContext('2d');
+const ortograficoCtx = ortograficoCanvas.getContext('2d');
+const isometricoCtx = isometricoCanvas.getContext('2d');
+
+// Crear un cubo y dibujarlo en las diferentes proyecciones
+const cubo = new Cubo(100, 100, 100);
+cubo.dibujar_perspectiva(perspectivaCtx, 0.5);
+cubo.dibujar_ortografica(ortograficoCtx);
+cubo.dibujar_isometrica(isometricoCtx);
