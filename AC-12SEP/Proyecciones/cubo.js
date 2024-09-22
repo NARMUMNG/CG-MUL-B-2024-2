@@ -16,3 +16,27 @@ class Linea {
     }
 }
 
+// Clase Cuadrado
+class Cuadrado {
+    constructor(x, y, lado) {
+        this.x = x;
+        this.y = y;
+        this.lado = lado;
+    }
+
+    // Obtener las líneas del cuadrado
+    obtenerLineas() {
+        const lineas = [];
+        lineas.push(new Linea(this.x, this.y, this.x + this.lado, this.y));
+        lineas.push(new Linea(this.x + this.lado, this.y, this.x + this.lado, this.y + this.lado));
+        lineas.push(new Linea(this.x + this.lado, this.y + this.lado, this.x, this.y + this.lado));
+        lineas.push(new Linea(this.x, this.y + this.lado, this.x, this.y));
+        return lineas;
+    }
+
+    dibujar(ctx, color = 'black') {
+        const lineas = this.obtenerLineas();
+        lineas.forEach(linea => linea.dibujar(ctx, color));
+    }
+}
+
