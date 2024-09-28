@@ -10,6 +10,81 @@
   </style>
 </head>
 <body>
-  <!-- Aquí se cargará Three.js y el script de la animación -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // Escena, cámara y renderizador
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Iluminación
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
+    // Geometrías
+    const geometryCube = new THREE.BoxGeometry();
+    const geometrySphere = new THREE.SphereGeometry(1, 32, 32);
+    const geometryTetrahedron = new THREE.TetrahedronGeometry(1);
+
+    // Nueva textura para el cubo
+    const textureLoader = new THREE.TextureLoader();
+    const cubeMaterial = new THREE.MeshBasicMaterial({
+      map: textureLoader.load('https://threejs.org/examples/textures/brick_diffuse.jpg') // Textura de ladrillos
+    });
+
+    // Materiales de colores
+    const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });  // Verde
+    const tetrahedronMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });  // Morado
+
+    // Crear los objetos
+    const cube = new THREE.Mesh(geometryCube, cubeMaterial);
+    const sphere = new THREE.Mesh(geometrySphere, sphereMaterial);
+    const tetrahedron = new THREE.Mesh(geometryTetrahedron, tetrahedronMaterial);
+
+    // Añadir a la escena
+    scene.add(cube);
+    scene.add(sphere);
+    scene.add(tetrahedron);
+
+    // Posicionar los objetos
+    cube.position.x = -3;
+    sphere.position.x = 0;
+    tetrahedron.position.x = 3;
+
+    // Posicionar la cámara
+    camera.position.z = 5;
+
+    // Animación
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Rotación aleatoria
+      cube.rotation.x += Math.random() * 0.01;
+      cube.rotation.y += Math.random() * 0.01;
+      sphere.rotation.x += Math.random() * 0.01;
+      sphere.rotation.y += Math.random() * 0.01;
+      tetrahedron.rotation.x += Math.random() * 0.01;
+      tetrahedron.rotation.y += Math.random() * 0.01;
+
+      // Movimiento aleatorio
+      cube.position.y += (Math.random() - 0.5) * 0.02;
+      sphere.position.y += (Math.random() - 0.5) * 0.02;
+      tetrahedron.position.y += (Math.random() - 0.5) * 0.02;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Responsividad
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+  </script>
 </body>
 </html>
