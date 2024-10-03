@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cubos Aleatorios con Three.js</title>
+    <title>Cubos en Fila con Three.js</title>
     <style>
         body { margin: 0; }
         canvas { display: block; }
@@ -20,18 +20,20 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Función para crear cubos
+        // Función para crear cubos en fila
         function createCubes(numCubes) {
+            const spacing = 2; // Espaciado entre cubos
+
             for (let i = 0; i < numCubes; i++) {
                 // Crear geometría y material para el cubo
                 const geometry = new THREE.BoxGeometry(1, 1, 1);
                 const material = new THREE.MeshBasicMaterial({ wireframe: true });
                 const cube = new THREE.Mesh(geometry, material);
 
-                // Posicionar el cubo en coordenadas aleatorias
-                cube.position.x = Math.random() * 10 - 5; // Posición aleatoria en el eje X
-                cube.position.y = Math.random() * 10 - 5; // Posición aleatoria en el eje Y
-                cube.position.z = Math.random() * 10 - 5; // Posición aleatoria en el eje Z
+                // Posicionar el cubo en fila en el eje X
+                cube.position.x = (i * spacing) - ((numCubes - 1) * spacing) / 2; // Centrar los cubos en el eje X
+                cube.position.y = 0; // Mantener en el eje Y
+                cube.position.z = 0; // Mantener en el eje Z
 
                 // Agregar el cubo a la escena
                 scene.add(cube);
@@ -43,7 +45,7 @@
         createCubes(numCubes);
 
         // Posicionar la cámara
-        camera.position.z = 15;
+        camera.position.z = 10;
 
         // Función de animación
         function animate() {
