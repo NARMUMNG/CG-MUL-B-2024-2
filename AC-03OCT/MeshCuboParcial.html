@@ -3,72 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cubos en Fila con Three.js</title>
+    <title>Parcial II NARM.js</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        body { margin: 0; overflow: hidden; } /* Evitar scrolls */
     </style>
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script>
-        // Configuración de la escena
+        // Configuración de la escena, lla camara y el renderizador
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Función para crear cubos en fila
-        function createCubes(numCubes) {
-            const spacing = 2; // Espaciado entre cubos
+        // Implementacion Orbit Controls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Amortiguacion para suavizar el movimiento
+        controls.dampingFactor = 0.05; // Factor de amortiguacion
+        controls.screenSpacePanning = false; // Evitar que la cámara se mueva en el eje Z para que rote a partir de un centro (donde se generan los cubos)
 
-            for (let i = 0; i < numCubes; i++) {
-                // Crear geometría y material para el cubo
-                const geometry = new THREE.BoxGeometry(1, 1, 1);
-                const material = new THREE.MeshBasicMaterial({ wireframe: true });
-                const cube = new THREE.Mesh(geometry, material);
+        // Generar cubos entre 1 y 5 aleatoriamente
+        const numCubes = Math.floor(Math.random() * 5) + 1;
+        const cubes = [];
 
-                // Posicionar el cubo en fila en el eje X
-                cube.position.x = (i * spacing) - ((numCubes - 1) * spacing) / 2; // Centrar los cubos en el eje X
-                cube.position.y = 0; // Mantener en el eje Y
-                cube.position.z = 0; // Mantener en el eje Z
+        const spacing = 2; // Espaciado entre cubos
 
-                // Agregar el cubo a la escena
-                scene.add(cube);
-            }
+        // Calcular el desplazamiento para centrar los cubos
+        const offsetX = (numCubes - 1) * spacing / 2;
+
+        for (let i = 0; i < numCubes; i++) {
+            // Creación de la geometría del cubo
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+            // Crear material del cubo (sin relleno, o sea, la malla)
+            const material = new THREE.MeshBasicMaterial({ wireframe: true });
+
+            // Crear cubo con la geometría y el material
+            const cube = new THREE.Mesh(geometry, material);
+
+            // Posicionar los cubos alineados horizontalmente y centrados
+            cube.position.x = i * spacing - offsetX; // Centrar en el eje X
+            cube.position.y = 0; // Mantener en el eje Y
+            cube.position.z = 0; // Mantener en el eje Z
+
+            // Agregar el cubo a la escena y al array de cubos
+            scene.add(cube);
+            cubes.push(cube);
         }
 
-        // Generar un número aleatorio de cubos entre 1 y 5
-        const numCubes = Math.floor(Math.random() * 5) + 1;
-        createCubes(numCubes);
+        // Posicion de la cámara
+        camera.position.z = 5;
 
-        // Posicionar la cámara
-        camera.position.z = 10;
-
-        // Función de animación
+        // Función que anima los cubos para rotarlos y renderizar la escena
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotar cada cubo
-            scene.children.forEach(cube => {
-                if (cube instanceof THREE.Mesh) {
-                    cube.rotation.x += 0.01;
-                    cube.rotation.y += 0.01;
-                }
+            // Rotar cada cubo sobre sí mismos
+            cubes.forEach(cube => {
+                cube.rotation.x += 0.01;
+                cube.rotation.y += 0.01;
             });
+
+            // Actualizar controles de órbita
+            controls.update();
 
             renderer.render(scene, camera);
         }
 
+        // Animacion de los cubos
         animate();
 
-        // Manejo del cambio de tamaño de la ventana
+        // Ajustar el tamaño del renderizado si la ventana cambia de tamaño
         window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
