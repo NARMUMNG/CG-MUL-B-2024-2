@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cubo Rotando con Three.js</title>
+    <title>Cubos Aleatorios con Three.js</title>
     <style>
         body { margin: 0; }
         canvas { display: block; }
@@ -20,22 +20,42 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Crear un cubo
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshBasicMaterial({ wireframe: true }); // Cambia el material a wireframe
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
+        // Función para crear cubos
+        function createCubes(numCubes) {
+            for (let i = 0; i < numCubes; i++) {
+                // Crear geometría y material para el cubo
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshBasicMaterial({ wireframe: true });
+                const cube = new THREE.Mesh(geometry, material);
+
+                // Posicionar el cubo en coordenadas aleatorias
+                cube.position.x = Math.random() * 10 - 5; // Posición aleatoria en el eje X
+                cube.position.y = Math.random() * 10 - 5; // Posición aleatoria en el eje Y
+                cube.position.z = Math.random() * 10 - 5; // Posición aleatoria en el eje Z
+
+                // Agregar el cubo a la escena
+                scene.add(cube);
+            }
+        }
+
+        // Generar un número aleatorio de cubos entre 1 y 10
+        const numCubes = Math.floor(Math.random() * 10) + 1;
+        createCubes(numCubes);
 
         // Posicionar la cámara
-        camera.position.z = 5;
+        camera.position.z = 15;
 
         // Función de animación
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotar el cubo
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
+            // Rotar cada cubo
+            scene.children.forEach(cube => {
+                if (cube instanceof THREE.Mesh) {
+                    cube.rotation.x += 0.01;
+                    cube.rotation.y += 0.01;
+                }
+            });
 
             renderer.render(scene, camera);
         }
